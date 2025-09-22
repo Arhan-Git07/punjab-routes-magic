@@ -1,278 +1,229 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Clock, MapPin, DollarSign, Users, Navigation } from "lucide-react";
+import { Bus, Clock, MapPin, AlertTriangle, CheckCircle } from "lucide-react";
 
-// Mock bus data
+// Mock bus data with realistic delays and traffic
 const mockBuses = [
   {
-    id: "PB-001",
-    route: "Chandigarh - Ludhiana",
-    lat: 30.7333,
-    lng: 76.7794,
-    eta: "5 mins",
-    nextStops: ["Sector 17", "ISBT", "Railway Station"],
+    id: "PB-101",
+    route: "Chandigarh to Ludhiana",
+    status: "On Time",
+    eta: "2 min",
+    nextStop: "Sector 17",
     fare: "₹45",
-    occupancy: 68,
-    status: "On Time"
+    passengers: 28,
+    capacity: 40,
+    delay: 0,
+    coordinates: { lat: 30.7333, lng: 76.7794 }
   },
   {
-    id: "PB-042",
-    route: "Amritsar - Jalandhar",
-    lat: 31.6340,
-    lng: 74.8723,
-    eta: "12 mins",
-    nextStops: ["Golden Temple", "Hall Gate", "Bus Stand"],
+    id: "PB-205",
+    route: "Amritsar to Jalandhar", 
+    status: "Delayed",
+    eta: "8 min",
+    nextStop: "GT Road Junction",
     fare: "₹35",
-    occupancy: 45,
-    status: "Delayed"
+    passengers: 35,
+    capacity: 40,
+    delay: 5,
+    coordinates: { lat: 31.6340, lng: 74.8723 }
   },
   {
-    id: "PB-089",
-    route: "Patiala - Bathinda",
-    lat: 30.3398,
-    lng: 76.3869,
-    eta: "8 mins",
-    nextStops: ["Old Bus Stand", "Govt College", "Leela Bhawan"],
-    fare: "₹55",
-    occupancy: 82,
-    status: "On Time"
-  },
-  {
-    id: "PB-156",
-    route: "Mohali - Ropar",
-    lat: 30.7046,
-    lng: 76.7179,
-    eta: "3 mins",
-    nextStops: ["Phase 8B", "Aerocity", "Kharar"],
+    id: "PB-312",
+    route: "Patiala to Mohali",
+    status: "On Time", 
+    eta: "1 min",
+    nextStop: "Phase 7 Market",
     fare: "₹25",
-    occupancy: 35,
-    status: "On Time"
+    passengers: 22,
+    capacity: 35,
+    delay: 0,
+    coordinates: { lat: 30.7046, lng: 76.7179 }
+  },
+  {
+    id: "PB-418",
+    route: "Bathinda to Mansa",
+    status: "Heavy Traffic",
+    eta: "15 min", 
+    nextStop: "Bus Stand Main",
+    fare: "₹40",
+    passengers: 31,
+    capacity: 40,
+    delay: 10,
+    coordinates: { lat: 30.2110, lng: 74.9455 }
+  },
+  {
+    id: "PB-527",
+    route: "Ferozepur to Fazilka",
+    status: "Delayed",
+    eta: "12 min",
+    nextStop: "Civil Lines",
+    fare: "₹30", 
+    passengers: 18,
+    capacity: 35,
+    delay: 7,
+    coordinates: { lat: 30.9287, lng: 74.6154 }
+  },
+  {
+    id: "PB-634", 
+    route: "Kapurthala to Nawanshahr",
+    status: "On Time",
+    eta: "4 min",
+    nextStop: "Railway Crossing",
+    fare: "₹20",
+    passengers: 14,
+    capacity: 30,
+    delay: 0,
+    coordinates: { lat: 31.3800, lng: 75.3849 }
   }
 ];
 
 const MapSection = () => {
-  const [selectedBus, setSelectedBus] = useState<typeof mockBuses[0] | null>(null);
+  const [selectedBus, setSelectedBus] = useState(null);
 
   const getStatusColor = (status: string) => {
-    return status === "On Time" ? "bg-primary" : "bg-accent";
+    switch (status) {
+      case "On Time": return "bg-green-500/20 text-green-700 border-green-500/30";
+      case "Delayed": return "bg-yellow-500/20 text-yellow-700 border-yellow-500/30";
+      case "Heavy Traffic": return "bg-red-500/20 text-red-700 border-red-500/30";
+      default: return "bg-gray-500/20 text-gray-700 border-gray-500/30";
+    }
   };
 
-  const getOccupancyColor = (occupancy: number) => {
-    if (occupancy > 70) return "text-accent";
-    if (occupancy > 40) return "text-secondary";
-    return "text-primary";
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "On Time": return <CheckCircle className="h-4 w-4" />;
+      case "Delayed": return <Clock className="h-4 w-4" />;
+      case "Heavy Traffic": return <AlertTriangle className="h-4 w-4" />;
+      default: return <Bus className="h-4 w-4" />;
+    }
   };
 
   return (
-    <section id="map" className="py-20 px-4 bg-background">
+    <section id="live-map" className="py-20 px-4 bg-gradient-subtle">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 animate-fade-in">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl font-bold text-foreground mb-4">Live Bus Tracking</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Real-time locations, routes, and schedules of all Punjab public transport buses
+            Real-time bus locations, routes, and schedules across Punjab with traffic updates
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Map Container */}
+          {/* Google Maps Iframe */}
           <div className="lg:col-span-2">
-            <Card className="h-96 lg:h-[600px] shadow-card border-0 overflow-hidden animate-scale-in">
-              <div className="relative w-full h-full bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
-                {/* Mock map with bus markers */}
-                <div className="absolute inset-4 bg-gradient-to-br from-muted/30 to-background rounded-lg border border-border/50">
-                  {/* Bus markers */}
-                  {mockBuses.map((bus, index) => (
-                    <div
-                      key={bus.id}
-                      className={`absolute w-8 h-8 bg-gradient-button rounded-full shadow-primary cursor-pointer transform transition-all duration-300 hover:scale-125 animate-bounce-gentle flex items-center justify-center`}
-                      style={{
-                        left: `${20 + (index * 20)}%`,
-                        top: `${30 + (index * 15)}%`,
-                        animationDelay: `${index * 0.5}s`
-                      }}
-                      onClick={() => setSelectedBus(bus)}
-                    >
-                      <Navigation className="h-4 w-4 text-white" />
-                    </div>
-                  ))}
-                  
-                  {/* Map overlay info */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-card">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <div className="w-3 h-3 bg-gradient-button rounded-full animate-pulse"></div>
-                      Live Tracking Active
-                    </div>
-                  </div>
-
-                  {/* Legend */}
-                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-card">
-                    <h4 className="text-sm font-semibold mb-2">Legend</h4>
-                    <div className="space-y-1 text-xs">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span>On Time</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-accent rounded-full"></div>
-                        <span>Delayed</span>
-                      </div>
-                    </div>
-                  </div>
+            <Card className="overflow-hidden shadow-card border-0 backdrop-blur-sm">
+              <CardContent className="p-0 relative">
+                <div className="aspect-video w-full">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d435519.2274042892!2d74.00218827226624!3d31.326982876336838!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391963ae045abcd3%3A0x5b277d2682a23d47!2sPunjab%2C%20India!5e1!3m2!1sen!2sus!4v1647892358657!5m2!1sen!2sus"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="rounded-lg"
+                  />
                 </div>
-              </div>
+                <div className="absolute top-4 left-4">
+                  <Badge variant="secondary" className="bg-white/90 text-foreground">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    Live Traffic Data
+                  </Badge>
+                </div>
+              </CardContent>
             </Card>
           </div>
 
           {/* Bus List */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-foreground mb-6 animate-slide-up">Active Buses</h3>
-            {mockBuses.map((bus, index) => (
-              <Card 
-                key={bus.id} 
-                className={`cursor-pointer transition-all duration-300 hover:shadow-primary transform hover:scale-[1.02] border-0 shadow-card animate-slide-up ${
-                  selectedBus?.id === bus.id ? 'ring-2 ring-primary shadow-primary' : ''
-                }`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => setSelectedBus(bus)}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{bus.id}</CardTitle>
-                    <Badge className={getStatusColor(bus.status)}>
-                      {bus.status}
-                    </Badge>
-                  </div>
-                  <CardDescription className="font-medium text-base">
-                    {bus.route}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="font-semibold">ETA: {bus.eta}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm">
-                    <DollarSign className="h-4 w-4 text-secondary" />
-                    <span>Fare: <span className="font-semibold">{bus.fare}</span></span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className={`h-4 w-4 ${getOccupancyColor(bus.occupancy)}`} />
-                    <span>Occupancy: <span className="font-semibold">{bus.occupancy}%</span></span>
-                  </div>
-                  
-                  <div className="mt-3">
-                    <div className="flex items-center gap-1 mb-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">Next Stops:</span>
+            <div className="flex items-center gap-2 mb-6">
+              <Bus className="h-5 w-5 text-primary" />
+              <h3 className="text-xl font-semibold">Active Buses</h3>
+              <Badge variant="outline" className="ml-auto">
+                {mockBuses.length} Online
+              </Badge>
+            </div>
+            
+            <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+              {mockBuses.map((bus, index) => (
+                <Card 
+                  key={bus.id}
+                  className={`cursor-pointer transition-all duration-300 hover:shadow-card hover:scale-[1.02] border-border/50 ${
+                    selectedBus === bus.id ? 'ring-2 ring-primary shadow-card' : ''
+                  }`}
+                  onClick={() => setSelectedBus(selectedBus === bus.id ? null : bus.id)}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Bus className="h-4 w-4 text-primary" />
+                        <span className="font-semibold text-sm">{bus.id}</span>
+                      </div>
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs ${getStatusColor(bus.status)}`}
+                      >
+                        {getStatusIcon(bus.status)}
+                        <span className="ml-1">{bus.status}</span>
+                      </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                      {bus.nextStops.slice(0, 2).map((stop, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
-                          {stop}
-                        </Badge>
-                      ))}
-                      {bus.nextStops.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{bus.nextStops.length - 2} more
-                        </Badge>
+                    
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        <span className="truncate">{bus.route}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>ETA: {bus.eta}</span>
+                        </div>
+                        <span className="font-semibold text-primary">{bus.fare}</span>
+                      </div>
+
+                      {selectedBus === bus.id && (
+                        <div className="mt-4 pt-3 border-t border-border/50 space-y-2 animate-fade-in">
+                          <div className="text-xs text-muted-foreground">
+                            <strong>Next Stop:</strong> {bus.nextStop}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            <strong>Passengers:</strong> {bus.passengers}/{bus.capacity}
+                          </div>
+                          {bus.delay > 0 && (
+                            <div className="text-xs text-orange-600">
+                              <strong>Delay:</strong> {bus.delay} minutes
+                            </div>
+                          )}
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full transition-all duration-500" 
+                              style={{ width: `${(bus.passengers / bus.capacity) * 100}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-xs text-center text-muted-foreground">
+                            Occupancy: {Math.round((bus.passengers / bus.capacity) * 100)}%
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            
-            <Button className="w-full mt-6 bg-gradient-accent hover:shadow-accent transition-all duration-300 transform hover:scale-[1.02] h-12 rounded-xl font-semibold">
-              <MapPin className="mr-2 h-4 w-4" />
-              Find Nearest Bus Stop
-            </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-border/50">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>Last updated:</span>
+                <span className="font-medium">Just now</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Selected bus popup */}
-        {selectedBus && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <Card className="max-w-md w-full shadow-2xl border-0 animate-scale-in">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl">{selectedBus.id}</CardTitle>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => setSelectedBus(null)}
-                    className="h-8 w-8 p-0"
-                  >
-                    ✕
-                  </Button>
-                </div>
-                <CardDescription className="text-base font-medium">
-                  {selectedBus.route}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">ETA</p>
-                      <p className="font-semibold">{selectedBus.eta}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-secondary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Fare</p>
-                      <p className="font-semibold">{selectedBus.fare}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Users className={`h-5 w-5 ${getOccupancyColor(selectedBus.occupancy)}`} />
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Occupancy</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-muted rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full transition-all duration-300 ${
-                            selectedBus.occupancy > 70 ? 'bg-accent' : 
-                            selectedBus.occupancy > 40 ? 'bg-secondary' : 'bg-primary'
-                          }`}
-                          style={{ width: `${selectedBus.occupancy}%` }}
-                        ></div>
-                      </div>
-                      <span className="font-semibold text-sm">{selectedBus.occupancy}%</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <MapPin className="h-5 w-5 text-muted-foreground" />
-                    <span className="font-medium">Upcoming Stops</span>
-                  </div>
-                  <div className="space-y-2">
-                    {selectedBus.nextStops.map((stop, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span>{stop}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <Button className="w-full bg-gradient-button hover:shadow-primary transition-all duration-300 transform hover:scale-[1.02] h-12 rounded-xl font-semibold">
-                  Set Reminder for This Bus
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
     </section>
   );

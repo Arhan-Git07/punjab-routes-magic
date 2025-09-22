@@ -1,9 +1,34 @@
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Bus } from "lucide-react";
+import { MapPin, Clock, Bus, User, LogIn } from "lucide-react";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onAuthClick: (type: 'login' | 'signup') => void;
+}
+
+const HeroSection = ({ onAuthClick }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
+      {/* Top Right Auth Buttons */}
+      <div className="absolute top-8 right-8 flex gap-3 z-20">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => onAuthClick('login')}
+          className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-300"
+        >
+          <LogIn className="mr-2 h-4 w-4" />
+          Login
+        </Button>
+        <Button 
+          size="sm"
+          onClick={() => onAuthClick('signup')}
+          className="bg-gradient-button hover:shadow-primary transition-all duration-300"
+        >
+          <User className="mr-2 h-4 w-4" />
+          Sign Up
+        </Button>
+      </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
       <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-bounce-gentle"></div>
@@ -34,9 +59,8 @@ const HeroSection = () => {
           </Button>
           
           <Button 
-            variant="outline" 
             size="lg"
-            className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-lg px-8 py-4 rounded-xl"
+            className="bg-gradient-button hover:shadow-primary transition-all duration-300 transform hover:scale-105 text-lg px-8 py-4 rounded-xl font-semibold"
           >
             <MapPin className="mr-2 h-5 w-5" />
             View Live Map
