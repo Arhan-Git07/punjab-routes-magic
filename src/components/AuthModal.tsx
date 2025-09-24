@@ -36,7 +36,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab }: AuthModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="relative max-w-md w-full animate-scale-in">
         <button
           onClick={onClose}
@@ -51,7 +51,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab }: AuthModalProps) => {
         </div>
 
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-2 mb-6 sticky top-0 z-10">
             <TabsTrigger value="login" className="text-sm font-medium">Login</TabsTrigger>
             <TabsTrigger value="signup" className="text-sm font-medium">Sign Up</TabsTrigger>
           </TabsList>
@@ -108,8 +108,8 @@ const AuthModal = ({ isOpen, onClose, defaultTab }: AuthModalProps) => {
           </TabsContent>
 
           <TabsContent value="signup">
-            <Card className="shadow-card border-0 backdrop-blur-sm">
-              <CardHeader className="text-center pb-4">
+            <Card className="shadow-card border-0 backdrop-blur-sm max-h-[70vh] overflow-y-auto">
+              <CardHeader className="text-center pb-4 sticky top-0 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50 z-10">
                 <CardTitle className="text-2xl">Create Account</CardTitle>
                 <CardDescription>Join thousands of smart commuters</CardDescription>
               </CardHeader>

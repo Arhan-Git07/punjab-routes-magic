@@ -97,19 +97,19 @@ const ContactForm = () => {
             <div className="bg-muted/30 rounded-2xl p-6 mt-8">
               <h4 className="font-semibold text-foreground mb-4">Quick Facts</h4>
               <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
+                <div className="rounded-xl border border-[hsl(30_40%_30%)] shadow-[0_4px_12px_hsl(180_100%_40%_/_0.35)] p-4 bg-white/70">
                   <div className="text-2xl font-bold text-primary">24/7</div>
                   <div className="text-sm text-muted-foreground">Support</div>
                 </div>
-                <div>
+                <div className="rounded-xl border border-[hsl(30_40%_30%)] shadow-[0_4px_12px_hsl(180_100%_40%_/_0.35)] p-4 bg-white/70">
                   <div className="text-2xl font-bold text-secondary">1000+</div>
                   <div className="text-sm text-muted-foreground">Happy Users</div>
                 </div>
-                <div>
+                <div className="rounded-xl border border-[hsl(30_40%_30%)] shadow-[0_4px_12px_hsl(180_100%_40%_/_0.35)] p-4 bg-white/70">
                   <div className="text-2xl font-bold text-accent">95%</div>
                   <div className="text-sm text-muted-foreground">Accuracy</div>
                 </div>
-                <div>
+                <div className="rounded-xl border border-[hsl(30_40%_30%)] shadow-[0_4px_12px_hsl(180_100%_40%_/_0.35)] p-4 bg-white/70">
                   <div className="text-2xl font-bold text-primary">50+</div>
                   <div className="text-sm text-muted-foreground">Routes</div>
                 </div>

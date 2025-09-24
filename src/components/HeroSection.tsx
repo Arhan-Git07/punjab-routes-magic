@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onAuthClick }: HeroSectionProps) => {
   return (
-    <section className="relative min-h-screen bg-gradient-hero flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Top Right Auth Buttons */}
       <div className="absolute top-8 right-8 flex gap-3 z-20">
         <Button 
@@ -29,10 +29,13 @@ const HeroSection = ({ onAuthClick }: HeroSectionProps) => {
         </Button>
       </div>
 
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
-      <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-bounce-gentle"></div>
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-bounce-gentle" style={{ animationDelay: '1s' }}></div>
+      {/* Background image with blur */}
+      <div
+        className="absolute inset-0 bg-center bg-cover filter blur-sm scale-105 pointer-events-none z-0"
+        style={{ backgroundImage: "url('/Punjab%20Background.jpg')" }}
+      ></div>
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/35 pointer-events-none z-0"></div>
       
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto animate-fade-in">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">

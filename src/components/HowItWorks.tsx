@@ -43,12 +43,12 @@ const HowItWorks = () => {
           {steps.map((step, index) => (
             <Card 
               key={index} 
-              className="relative overflow-hidden shadow-card border-0 bg-gradient-card hover:shadow-primary transition-all duration-500 transform hover:scale-105 animate-slide-up group"
+              className="relative overflow-hidden shadow-card bg-gradient-card hover:shadow-primary transition-all duration-500 transform hover:scale-105 animate-slide-up group border border-border/60"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               {/* Step number background */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center opacity-10 group-hover:opacity-20 transition-opacity duration-300">
-                <span className="text-2xl font-bold text-white">{step.step}</span>
+              <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-hero rounded-full flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                <span className="text-2xl font-extrabold text-black/70">{step.step}</span>
               </div>
 
               <CardHeader className="text-center pb-4">
@@ -56,7 +56,7 @@ const HowItWorks = () => {
                   {step.icon}
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-foreground bg-muted/70 px-3 py-1 rounded-full border border-border/60">
                     Step {step.step}
                   </span>
                 </div>
