@@ -12,9 +12,16 @@
     <meta name="author" content="Team Algo Minds" />
     <meta name="keywords" content="punjab, public transport, bus tracker, real-time, routes, schedules, fares" />
 
-    <meta property="og:title" content="Punjab Public Transport Tracker - Smart Travel, On Time" />
-    <meta property="og:description" content="Track buses, schedules, routes, and fares in real time across Punjab. Smart Travel, On Time – Every Time!" />
-    <meta property="og:type" content="website" />
+   <div>
+     <h5> WWelcome to Punjab Live TRANSIT tracker  </h5>
+     <h6>  Sign in with google  </h6>
+     <h7>     your live tracking buddy </h7>
+     
+     <p5>    enter your username  </p5>
+     <p6>     enter your password  </p6>
+     
+   </div>
+  
 
     <meta name="twitter:card" content="summary_large_image" />
 <<<<<<< HEAD
