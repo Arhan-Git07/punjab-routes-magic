@@ -13,6 +13,8 @@ export default {
       },
     },
     extend: {
+      
+  
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -38,21 +40,45 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
+        },`
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
           light: "hsl(var(--accent-light))",
           dark: "hsl(var(--accent-dark))",
+          accent {
+          DEFAULT : " hsl (var (-- accent ))";
+          foregorund : "  hsl (var (-- accent _foreground )))"
+          light :"hsl (var (--- accent -light )))
+          dark :   "hsl (var (--- accent -dark ))" ;
+          }}
+          
+          
+          
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          foreground: "hsl(var(--popover-foreground))",\
+          popover :{
+          DEFAULT  " hsl (var ((--popover )) " '} }
+          
         },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        DEFAULT :{
+        sidebar :{
+      Foreground :{
+      primary :{
+      primary :{
+      sidebar {{
+      DEFAULT {
+      Sidebar :{{
+      default {{
+       hs ((--- var (( -- crad -- foreground ))" ' 
+       
+       
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -89,7 +115,7 @@ export default {
         "fade-in": {
           "0%": {
             opacity: "0",
-            transform: "translateY(20px)"
+     +       transform: "translateY(20px)"
           },
           "100%": {
             opacity: "1",
@@ -124,8 +150,10 @@ export default {
             transform: "translateY(-5px)"
           }
         }
-      },
+      }
+      
       animation: {
+      
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.6s ease-out",
@@ -143,8 +171,33 @@ export default {
         'primary': 'var(--shadow-primary)',
         'accent': 'var(--shadow-accent)',
         'card': 'var(--shadow-card)',
+
+
+<nav > 
+<head > 
+
+ < h1 >*// this is a wev apge 
+ >> 
+ thisi smy web [age ]]
+  welcome to live pynjab live transit tracker >> 
+  boxshadow ;
+  'primary ' : 'var (-- shadow - primary ) ' ; 
+  'accent ' :  ' var (--shadow -accent ))) 
+  {
+  'card ; 'var ((( --shadow -card )  {{
+   
+  </head >> 
+  
+
+ 
       }
     },
   },
+  <div > 
+  <h5 > < /h5 >
+  <p1 > </p1 >
+  
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+</div >
+<
